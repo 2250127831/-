@@ -302,12 +302,19 @@ void View();
 	返回值：int
 */
 int isWin2(int x, int y);
+//用于在排行榜页面显示名次/昵称/积分
 void shuchu(int h, int minci, int x, int y);
+//用于登录
 void denglu();
+//用于储存当前用户的昵称
 char nicheng[30] = { 0 };
+//用于游戏积分的显示与计算
 int quanjvjifen = 0;
+//用于检查排行榜已有的玩家并返回数量
 int _check();
+//用于把第11名删去
 int  _delete();
+//排行榜页面
 void paihangView();
 // -------------------- service --------------------
 
@@ -1710,35 +1717,6 @@ void paihangView() {
 	fclose(fpt);
 	fclose(fp1);
 	fclose(fpt1);
-	if (_check() > 10) {
-		_delete();
-		char oldname[] = { "./昵称.txt" };
-		char newname[] = { "./2.txt" };
-		rename(oldname, newname);
-
-		char oldname1[] = { "./1.txt" };
-		char newname1[] = { "./昵称.txt" };
-		rename(oldname1, newname1);
-
-		char oldname2[] = { "./2.txt" };
-		char newname2[] = { "./1.txt" };
-		rename(oldname2, newname2);
-
-
-		char oldname3[] = { "./积分.txt" };
-		char newname3[] = { "./3.txt" };
-		rename(oldname3, newname3);
-
-		char oldname4[] = { "./4.txt" };
-		char newname4[] = { "./积分.txt" };
-		rename(oldname4, newname4);
-
-		char oldname5[] = { "./3.txt" };
-		char newname5[] = { "./4.txt" };
-		rename(oldname5, newname5);
-
-	}
-
 	View();
 	FlushBatchDraw();
 
