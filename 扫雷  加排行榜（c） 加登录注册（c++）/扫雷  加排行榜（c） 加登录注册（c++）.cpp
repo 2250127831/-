@@ -12,6 +12,7 @@
 #define MY_MAKER 3
 #define MY_RULE 4
 #define MY_OVER -1
+#define MY_LONGIN 5
 typedef struct {
 	int uMsg;
 	int x;
@@ -121,6 +122,7 @@ void menuView();
 	返回值：void
 */
 void controller();
+//用于自动展开
 void boom(int i, int j, int x, int y);
 /*
 	负责人：积羽
@@ -196,6 +198,7 @@ void skinView();
 	返回值：
 */
 void makerView();
+//计时器，用于积分倒减
 int Timer(int duration, int id);
 /*
 	负责人：积羽
@@ -288,6 +291,7 @@ void playerclick(int i, int j, int k, int x, int y);
 	返回值：int
 */
 int isWin1(int x, int y);
+//
 void View();
 /*
 	负责人：峠
@@ -316,7 +320,7 @@ int main()
 }
 
 void denglu() {
-	initgraph(400, 400, 1);
+	initgraph(400, 400, 0);
 	char ch1[100];
 	outtextxy(105, 105, L"请输入昵称(不包含汉字)");
 	char zi[50]{ 0 };
