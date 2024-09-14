@@ -1,10 +1,18 @@
 ﻿#include<stdio.h>
 #include<stdlib.h>
+#include<string>
 #include<graphics.h>
 #include<conio.h>
 #include<mmsystem.h>
+#include <iostream>
+#include <fstream>
+using namespace std;
 #pragma comment(lib,"winmm.lib")
 #include<time.h>
+#include<locale>
+#include<codecvt>
+#include<corecrt_io.h>
+#include<fcntl.h>
 #include"tools.hpp"//一个封装好的函数，可以直接打印不规则图片，不用搞掩码图和非掩码图，直接抠图就行了
 #define MY_MENU 0
 #define MY_GRADE 1
@@ -327,9 +335,9 @@ int main()
 }
 
 void denglu() {
-	initgraph(400, 400, 0);
+	initgraph(400, 400, 1);
 	char ch1[100];
-	outtextxy(105, 105, L"请输入昵称(不包含汉字)");
+	outtextxy(105, 105, "请输入昵称(不包含汉字)");
 	char zi[50]{ 0 };
 	int i = 0;
 	int k = 0;
@@ -399,46 +407,51 @@ void menuView()
 {
 	//修改窗口句柄
 	HWND hwnd = GetHWnd();
-	SetWindowText(hwnd, L"扫雷");
+	SetWindowText(hwnd, "扫雷");
 	BeginBatchDraw();
-	IMAGE img_1, img_2;
-	IMAGE ppp;
-	loadimage(&img_2, L"扫雷素材/2.png");
-	loadimage(&img_1, L"扫雷素材/1.png");
-	loadimage(&ppp, L"扫雷素材/奖杯.jpg", 50, 70);
+	//IMAGE img_1, img_2;
+	//IMAGE ppp;
+	IMAGE bk;
+	//loadimage(&img_1, "扫雷素材/1.png");
+	//loadimage(&ppp, "扫雷素材/奖杯.jpg", 50, 70);
+	loadimage(&bk, "bj.png", 1200, 800);
 	while (1)
 	{
 		cleardevice();
 		//插入图片
-		putimage(0, 0, &img_2);
-		drawImg(226, 343, &img_1);
-		drawImg(20, 600, &ppp);
-		setbkcolor(BLACK);
-		setbkmode(TRANSPARENT);
-		int i;
-		//画出圆角矩形
-
-		for (i = 0; i <= 4; i++)
-		{
-			roundrect(850, 40 + i * 155, 1070, 130 + i * 155, 20, 20);
-		}
-		RECT rects[5] = {};
-		const wchar_t* menu[5] = { L"进入游戏",L"游戏设置",L"游戏规则",L"开发者概述",L"退出游戏" };
-		// 用已设定的圆角矩形方框设定drawtexts所需参数
-		for (int i = 0; i <= 4; i++)
-		{
-			rects[i].left = 850;
-			rects[i].top = 40 + i * 155;
-			rects[i].right = 1070;
-			rects[i].bottom = 130 + i * 155;
-		}
-		//在方框内补上文字
-		settextstyle(50, 0, L"微软雅黑");
-		for (int i = 0; i <= 4; i++)
-		{
-			drawtext(menu[i], &rects[i], DT_SINGLELINE | DT_WORD_ELLIPSIS | DT_VCENTER | DT_CENTER);
-		}
-
+		putimage(0, 0, &bk);
+		//drawImg(226, 343, &img_1);
+		//drawImg(20, 600, &ppp);
+		//setbkcolor(BLACK);
+		//setbkmode(TRANSPARENT);
+		//int i;
+		////画出圆角矩形
+		//
+		//for (i = 0; i <= 4; i++)
+		//{
+		//	roundrect(850, 40 + i * 155, 1070, 130 + i * 155, 20, 20);
+		//}
+		//RECT rects[5] = {};
+		//const char* menu1 = { "进入游戏" };// "游戏设置", "游戏规则", "开发者概述", "退出游戏"
+		//const char* menu2 = { "游戏设置" };
+		//const char* menu3 = { "游戏规则" };
+		//const char* menu4 = { "开发者概述" };
+		//const char* menu5 = { "退出游戏" };
+		//// 用已设定的圆角矩形方框设定drawtexts所需参数
+		//for (int i = 0; i <= 4; i++)
+		//{
+		//	rects[i].left = 850;
+		//	rects[i].top = 40 + i * 155;
+		//	rects[i].right = 1070;
+		//	rects[i].bottom = 130 + i * 155;
+		//}
+		////在方框内补上文字
+		//settextstyle(50, 0, "微软雅黑");
+		//for (int i = 0; i <= 4; i++)
+		//{
+		//	drawtext(menu[i], &rects[i], DT_SINGLELINE | DT_WORD_ELLIPSIS | DT_VCENTER | DT_CENTER);
+		//}
+		//
 		//获取鼠标消息，并根据鼠标所在位置修改Flag的值
 		ExMessage m;
 		m = getmessage(EX_MOUSE);
@@ -477,7 +490,7 @@ void gradeView()
 {
 	IMAGE img;
 	ExMessage msg;
-	loadimage(&img, L"./扫雷素材/难度背景2.0.png", 1200, 800);
+	loadimage(&img, "./扫雷素材/难度背景2.0.png", 1200, 800);
 	BeginBatchDraw();
 	while (1)//持续进行难度选择的界面
 	{
@@ -529,27 +542,27 @@ void gameView(int x, int y, int z)
 	IMAGE chongzhi2;
 	ExMessage msg;
 	if (xunbaomoshi == 0 && skin == 1) {
-		loadimage(&bk, L"./扫雷素材/背景.png", 1200, 800);
+		loadimage(&bk, "./扫雷素材/背景.png", 1200, 800);
 	}
 	else if (xunbaomoshi == 1) {
-		loadimage(&bk, L"./扫雷素材/皮肤素材/寻宝模式/背景图.png", 1200, 800);
+		loadimage(&bk, "./扫雷素材/皮肤素材/寻宝模式/背景图.png", 1200, 800);
 	}
 	else if (xunbaomoshi == 0 && skin == 2) {
-		loadimage(&bk, L"./扫雷素材/皮肤素材/花园主题皮肤/背景.png", 1200, 800);
+		loadimage(&bk, "./扫雷素材/皮肤素材/花园主题皮肤/背景.png", 1200, 800);
 	}
 	else if (xunbaomoshi == 0 && skin == 3) {
-		loadimage(&bk, L"./扫雷素材/皮肤素材/简约主题皮肤/背景.png", 1200, 800);
+		loadimage(&bk, "./扫雷素材/皮肤素材/简约主题皮肤/背景.png", 1200, 800);
 	}
-	loadimage(&bk1, L"./扫雷素材/雷区背景.png", 257, 256);
-	loadimage(&bk2, L"./扫雷素材/雷区背景.png", 453, 452);
-	loadimage(&bk3, L"./扫雷素材/雷区背景.png", 565, 452);
-	loadimage(&bk4, L"./扫雷素材/雷区背景.png", 565, 340);
-	loadimage(&jingdian, L"./扫雷素材/经典.png", 120, 50);
-	loadimage(&xunbao, L"./扫雷素材/寻宝.png");
-	loadimage(&chongxin, L"./扫雷素材/重新.png");
-	loadimage(&chongxin2, L"./扫雷素材/重新2.png");
-	loadimage(&chongzhi, L"./扫雷素材/重置.png");
-	loadimage(&chongzhi2, L"./扫雷素材/重置2.png");
+	loadimage(&bk1, "./扫雷素材/雷区背景.png", 257, 256);
+	loadimage(&bk2, "./扫雷素材/雷区背景.png", 453, 452);
+	loadimage(&bk3, "./扫雷素材/雷区背景.png", 565, 452);
+	loadimage(&bk4, "./扫雷素材/雷区背景.png", 565, 340);
+	loadimage(&jingdian, "./扫雷素材/经典.png", 120, 50);
+	loadimage(&xunbao, "./扫雷素材/寻宝.png");
+	loadimage(&chongxin, "./扫雷素材/重新.png");
+	loadimage(&chongxin2, "./扫雷素材/重新2.png");
+	loadimage(&chongzhi, "./扫雷素材/重置.png");
+	loadimage(&chongzhi2, "./扫雷素材/重置2.png");
 
 	init(x, y, z);
 	int result = 0;
@@ -612,10 +625,10 @@ void gameView(int x, int y, int z)
 						j = (msg.y - 218) / 28;
 						playerclick(j, i, 2, x, y);
 						if (sound == 1) {
-							mciSendString(L"open ./扫雷素材/点按钮.mp3", 0, 0, 0);
-							mciSendString(L"play ./扫雷素材/点按钮.mp3", 0, 0, 0);
+							mciSendString("open ./扫雷素材/点按钮.mp3", 0, 0, 0);
+							mciSendString("play ./扫雷素材/点按钮.mp3", 0, 0, 0);
 							Sleep(350);
-							mciSendString(L"close ./扫雷素材/点按钮.mp3", 0, 0, 0);
+							mciSendString("close ./扫雷素材/点按钮.mp3", 0, 0, 0);
 						}
 					}
 
@@ -633,10 +646,10 @@ void gameView(int x, int y, int z)
 						j = (msg.y - 218) / 28;
 						playerclick(j, i, 2, x, y);
 						if (sound == 1) {
-							mciSendString(L"open ./扫雷素材/点按钮.mp3", 0, 0, 0);
-							mciSendString(L"play ./扫雷素材/点按钮.mp3", 0, 0, 0);
+							mciSendString("open ./扫雷素材/点按钮.mp3", 0, 0, 0);
+							mciSendString("play ./扫雷素材/点按钮.mp3", 0, 0, 0);
 							Sleep(350);
-							mciSendString(L"close ./扫雷素材/点按钮.mp3", 0, 0, 0);
+							mciSendString("close ./扫雷素材/点按钮.mp3", 0, 0, 0);
 						}
 					}
 				}
@@ -653,10 +666,10 @@ void gameView(int x, int y, int z)
 						j = (msg.y - 218) / 28;
 						playerclick(j, i, 2, x, y);
 						if (sound == 1) {
-							mciSendString(L"open ./扫雷素材/点按钮.mp3", 0, 0, 0);
-							mciSendString(L"play ./扫雷素材/点按钮.mp3", 0, 0, 0);
+							mciSendString("open ./扫雷素材/点按钮.mp3", 0, 0, 0);
+							mciSendString("play ./扫雷素材/点按钮.mp3", 0, 0, 0);
 							Sleep(350);
-							mciSendString(L"close ./扫雷素材/点按钮.mp3", 0, 0, 0);
+							mciSendString("close ./扫雷素材/点按钮.mp3", 0, 0, 0);
 						}
 					}
 				}
@@ -674,10 +687,10 @@ void gameView(int x, int y, int z)
 					j = (msg.y - 218) / 28;
 					playerclick(j, i, 2, x, y);
 					if (sound == 1) {
-						mciSendString(L"open ./扫雷素材/点按钮.mp3", 0, 0, 0);
-						mciSendString(L"play ./扫雷素材/点按钮.mp3", 0, 0, 0);
+						mciSendString("open ./扫雷素材/点按钮.mp3", 0, 0, 0);
+						mciSendString("play ./扫雷素材/点按钮.mp3", 0, 0, 0);
 						Sleep(350);
-						mciSendString(L"close ./扫雷素材/点按钮.mp3", 0, 0, 0);
+						mciSendString("close ./扫雷素材/点按钮.mp3", 0, 0, 0);
 					}
 				}
 			}
@@ -693,10 +706,10 @@ void gameView(int x, int y, int z)
 			FlushBatchDraw();
 			mapshowView(x, y);
 			if (sound == 1) {
-				mciSendString(L"open ./爆炸.mp3", 0, 0, 0);
-				mciSendString(L"play ./爆炸.mp3", 0, 0, 0);
+				mciSendString("open ./爆炸.mp3", 0, 0, 0);
+				mciSendString("play ./爆炸.mp3", 0, 0, 0);
 				Sleep(2000);
-				mciSendString(L"close ./爆炸.mp3", 0, 0, 0);
+				mciSendString("close ./爆炸.mp3", 0, 0, 0);
 			}
 			gameoverView(result);
 			if (winView == 1) { break; }
@@ -724,7 +737,7 @@ void gameView(int x, int y, int z)
 void setView()
 {
 	IMAGE img;
-	loadimage(&img, L"./扫雷素材/设置背景.png");
+	loadimage(&img, "./扫雷素材/设置背景.png");
 	int count = 1;//数取余实现开关
 	while (1)
 	{
@@ -772,11 +785,11 @@ void skinView()
 	IMAGE img_2;
 	IMAGE img_3;
 	IMAGE img_4;
-	loadimage(&img, L"./扫雷素材/2.png", 1200, 800);
-	loadimage(&img_1, L"./扫雷素材/皮肤选择/经典.png", 150, 150);
-	loadimage(&img_2, L"./扫雷素材/皮肤选择/花园.png", 150, 150);
-	loadimage(&img_3, L"./扫雷素材/皮肤选择/简约.png", 150, 150);
-	loadimage(&img_4, L"./扫雷素材/皮肤选择/返回.png", 50, 50);
+	loadimage(&img, "./扫雷素材/2.png", 1200, 800);
+	loadimage(&img_1, "./扫雷素材/皮肤选择/经典.png", 150, 150);
+	loadimage(&img_2, "./扫雷素材/皮肤选择/花园.png", 150, 150);
+	loadimage(&img_3, "./扫雷素材/皮肤选择/简约.png", 150, 150);
+	loadimage(&img_4, "./扫雷素材/皮肤选择/返回.png", 50, 50);
 	BeginBatchDraw();
 	while (1)
 	{
@@ -812,7 +825,7 @@ void skinView()
 void makerView() {
 	IMAGE imge;
 	ExMessage msg;
-	loadimage(&imge, L"./扫雷素材/背景.png", 1200, 800);
+	loadimage(&imge, "./扫雷素材/背景.png", 1200, 800);
 	cleardevice();
 	putimage(0, 0, &imge);
 	peekmessage(&msg);
@@ -842,7 +855,7 @@ void ruleView()
 {
 	IMAGE imge;
 	ExMessage msg;
-	loadimage(&imge, L"./扫雷素材/扫雷规则书.png", 1200, 800);
+	loadimage(&imge, "./扫雷素材/扫雷规则书.png", 1200, 800);
 	while (1)
 	{
 		cleardevice();
@@ -861,8 +874,8 @@ void gameoverView(int x)
 	IMAGE fail;
 	IMAGE win;
 	BeginBatchDraw();
-	loadimage(&fail, L"./扫雷素材/失败界面.png", 1200, 800);
-	loadimage(&win, L"./扫雷素材/胜利界面.png", 1200, 800);
+	loadimage(&fail, "./扫雷素材/失败界面.png", 1200, 800);
+	loadimage(&win, "./扫雷素材/胜利界面.png", 1200, 800);
 	if (x == 1) {
 		quanjvjifen = 0;
 	}
@@ -875,19 +888,19 @@ void gameoverView(int x)
 			cleardevice();
 			putimage(0, 0, &fail);
 			if (sound == 1) {
-				mciSendString(L"open 音乐/失败.mp3 alias fail", NULL, 0, NULL);
-				mciSendString(L"play fail repeat", NULL, 0, NULL);
-				mciSendString(L"setaudio fail volume to 500", NULL, 0, NULL);//失败音效
+				mciSendString("open 音乐/失败.mp3 alias fail", NULL, 0, NULL);
+				mciSendString("play fail repeat", NULL, 0, NULL);
+				mciSendString("setaudio fail volume to 500", NULL, 0, NULL);//失败音效
 			}
 			if (m.message == WM_LBUTTONDOWN && m.x >= 1060 && m.x <= 1186 && m.y >= 19 && m.y <= 94)//返回
 			{
-				mciSendString(L"close fail", NULL, 0, NULL);
+				mciSendString("close fail", NULL, 0, NULL);
 				winView = 1;
 				break;
 			}
 			if (m.message == WM_LBUTTONDOWN && m.x >= 21 && m.x <= 382 && m.y >= 19 && m.y <= 94)//重新开始
 			{
-				mciSendString(L"close fail", NULL, 0, NULL);
+				mciSendString("close fail", NULL, 0, NULL);
 				winView = 0;
 				break;
 			}
@@ -895,13 +908,13 @@ void gameoverView(int x)
 		else if (x == 2) {
 			putimage(0, 0, &win);
 			if (sound == 1) {
-				mciSendString(L"open 音乐/胜利.mp3 alias win", NULL, 0, NULL);
-				mciSendString(L"play win repeat", NULL, 0, NULL);
-				mciSendString(L"setaudio win volume to 500", NULL, 0, NULL);//胜利音效
+				mciSendString("open 音乐/胜利.mp3 alias win", NULL, 0, NULL);
+				mciSendString("play win repeat", NULL, 0, NULL);
+				mciSendString("setaudio win volume to 500", NULL, 0, NULL);//胜利音效
 			}
 			if (m.message == WM_LBUTTONDOWN && m.x >= 1060 && m.x <= 1186 && m.y >= 19 && m.y <= 94)//返回
 			{
-				mciSendString(L"close win", NULL, 0, NULL);
+				mciSendString("close win", NULL, 0, NULL);
 				winView = 1;
 				break;
 			}
@@ -1023,35 +1036,35 @@ void mapshowView(int x, int y)
 	IMAGE shuzi7;
 	IMAGE shuzi8;
 	IMAGE baozang;
-	loadimage(&qizi, L"./扫雷素材/雷块图标/棋子.png", 28, 28);
-	loadimage(&shuzi1, L"./扫雷素材/雷块数字/1.png", 20, 20);
-	loadimage(&shuzi2, L"./扫雷素材/雷块数字/2.png", 20, 20);
-	loadimage(&shuzi3, L"./扫雷素材/雷块数字/3.png", 20, 20);
-	loadimage(&shuzi4, L"./扫雷素材/雷块数字/4.png", 20, 20);
-	loadimage(&shuzi5, L"./扫雷素材/雷块数字/5.png", 20, 20);
-	loadimage(&shuzi6, L"./扫雷素材/雷块数字/6.png", 20, 20);
-	loadimage(&shuzi7, L"./扫雷素材/雷块数字/7.png", 20, 20);
-	loadimage(&shuzi8, L"./扫雷素材/雷块数字/8.png", 20, 20);
+	loadimage(&qizi, "./扫雷素材/雷块图标/棋子.png", 28, 28);
+	loadimage(&shuzi1, "./扫雷素材/雷块数字/1.png", 20, 20);
+	loadimage(&shuzi2, "./扫雷素材/雷块数字/2.png", 20, 20);
+	loadimage(&shuzi3, "./扫雷素材/雷块数字/3.png", 20, 20);
+	loadimage(&shuzi4, "./扫雷素材/雷块数字/4.png", 20, 20);
+	loadimage(&shuzi5, "./扫雷素材/雷块数字/5.png", 20, 20);
+	loadimage(&shuzi6, "./扫雷素材/雷块数字/6.png", 20, 20);
+	loadimage(&shuzi7, "./扫雷素材/雷块数字/7.png", 20, 20);
+	loadimage(&shuzi8, "./扫雷素材/雷块数字/8.png", 20, 20);
 	if (xunbaomoshi == 1) {
-		loadimage(&leikuai, L"./扫雷素材/皮肤素材/寻宝模式/未点开的格子.png", 28, 28);
-		loadimage(&leikuai2, L"./扫雷素材/皮肤素材/寻宝模式/点开数字为0.png", 28, 28);
-		loadimage(&lei, L"./扫雷素材/皮肤素材/寻宝模式/雷.png", 28, 28);
-		loadimage(&baozang, L"./扫雷素材/宝藏.png", 26, 26);
+		loadimage(&leikuai, "./扫雷素材/皮肤素材/寻宝模式/未点开的格子.png", 28, 28);
+		loadimage(&leikuai2, "./扫雷素材/皮肤素材/寻宝模式/点开数字为0.png", 28, 28);
+		loadimage(&lei, "./扫雷素材/皮肤素材/寻宝模式/雷.png", 28, 28);
+		loadimage(&baozang, "./扫雷素材/宝藏.png", 26, 26);
 	}
 	else if (xunbaomoshi == 0 && skin == 1) {
-		loadimage(&leikuai, L"./扫雷素材/雷块状态/默认.png", 28, 28);
-		loadimage(&leikuai2, L"./扫雷素材/雷块状态/按下.png", 28, 28);
-		loadimage(&lei, L"./扫雷素材/雷块图标/雷.png", 28, 28);
+		loadimage(&leikuai, "./扫雷素材/雷块状态/默认.png", 28, 28);
+		loadimage(&leikuai2, "./扫雷素材/雷块状态/按下.png", 28, 28);
+		loadimage(&lei, "./扫雷素材/雷块图标/雷.png", 28, 28);
 	}
 	else if (xunbaomoshi == 0 && skin == 2) {
-		loadimage(&leikuai, L"./扫雷素材/皮肤素材/花园主题皮肤/未点击的格子.png", 28, 28);
-		loadimage(&leikuai2, L"./扫雷素材/皮肤素材/花园主题皮肤/点击后没有数字的格子.png", 28, 28);
-		loadimage(&lei, L"./扫雷素材/皮肤素材/花园主题皮肤/雷.png", 28, 28);
+		loadimage(&leikuai, "./扫雷素材/皮肤素材/花园主题皮肤/未点击的格子.png", 28, 28);
+		loadimage(&leikuai2, "./扫雷素材/皮肤素材/花园主题皮肤/点击后没有数字的格子.png", 28, 28);
+		loadimage(&lei, "./扫雷素材/皮肤素材/花园主题皮肤/雷.png", 28, 28);
 	}
 	else if (xunbaomoshi == 0 && skin == 3) {
-		loadimage(&leikuai, L"./扫雷素材/皮肤素材/简约主题皮肤/未点击的格子.png", 28, 28);
-		loadimage(&leikuai2, L"./扫雷素材/皮肤素材/简约主题皮肤/点开没有数字的格子.png", 28, 28);
-		loadimage(&lei, L"./扫雷素材/皮肤素材/简约主题皮肤/雷.png", 28, 28);
+		loadimage(&leikuai, "./扫雷素材/皮肤素材/简约主题皮肤/未点击的格子.png", 28, 28);
+		loadimage(&leikuai2, "./扫雷素材/皮肤素材/简约主题皮肤/点开没有数字的格子.png", 28, 28);
+		loadimage(&lei, "./扫雷素材/皮肤素材/简约主题皮肤/雷.png", 28, 28);
 	}
 	int k = 0;
 	for (int i = 0; i < x; i++) {
@@ -1424,10 +1437,10 @@ void playerclick(int i, int j, int k, int x, int y) {
 		boom(i, j, x, y);
 		quanjvjifen += 2;
 		if (sound == 1) {
-			mciSendString(L"open ./扫雷素材/点按钮.mp3", 0, 0, 0);
-			mciSendString(L"play ./扫雷素材/点按钮.mp3", 0, 0, 0);
+			mciSendString("open ./扫雷素材/点按钮.mp3", 0, 0, 0);
+			mciSendString("play ./扫雷素材/点按钮.mp3", 0, 0, 0);
 			Sleep(400);
-			mciSendString(L"close ./扫雷素材/点按钮.mp3", 0, 0, 0);
+			mciSendString("close ./扫雷素材/点按钮.mp3", 0, 0, 0);
 		}
 	}
 	else if (k == 2) {
@@ -1623,39 +1636,61 @@ void shuchu(int h, int minci, int x, int y) {
 	char nicheng[10];
 	char jifen[10];
 	char minci1[2];
-	minci1[0] = minci + 48;
-	FILE* fp = fopen("./积分.txt", "r");
-	FILE* fpt = fopen("./昵称.txt", "r");
-	if (fpt == NULL) {
-		perror("open failed:");
-		return;
+	settextstyle(50, 0, "微软雅黑");
+	
+	if (minci == 10)
+	{
+		char minci2[] = { '1','0','\0'};
+		outtextxy(x, y, minci2);
 	}
+	else
+	{
+		minci1[0] = minci + 48;
+		minci1[1] = '\0';
+		outtextxy(x, y, minci1);
+	}
+	FILE* fp = fopen("./积分.txt", "r");
+	//FILE* fpt = fopen("./昵称.txt", "r");
+	//if (fpt == NULL) {
+	//	perror("open failed:");
+	//	return;
+	//}
+	fstream q;
+	string nic;
+	q.open("昵称.txt", ios::in);
 	while (!feof(fp)) {
 		i++;
 
 		fgets(jifen, 10, fp);
-		fgets(nicheng, 10, fpt);
+		getline(q, nic);
+		//fgets(nicheng, 10, fpt);
 		if (i == h + 1) {
-			outtextxy(x, y, minci1[0]);
-			int a = 0;
-			for (a = 0; nicheng[a] != '\n' && nicheng[a] != '\0'; a++);
-			nicheng[a] = '\0';
-			for (int j = 0; j < strlen(nicheng); j++) {
-				if (nicheng[j] != '\n') {
-					outtextxy(x + 50 + j * 40, y, nicheng[j]);
-				}
-			}
-			for (a = 0; jifen[a] != '\n' && jifen[a] != '\0'; a++);
-			nicheng[a] = '\0';
-			for (int j = 0; j < strlen(jifen); j++) {
-				if (jifen[j] != '\n') {
-					outtextxy(x + 450 + j * 40, y, jifen[j]);
-				}
-			}
+			
+			// = nicheng;
+			const char* p = nic.data();
+			char* jif = jifen;
+			outtextxy(x + 100 , y, p);
+			outtextxy(x + 450, y, jifen);
+			//int a = 0;
+			//for (a = 0; nicheng[a] != '\n' && nicheng[a] != '\0'; a++);
+			//nicheng[a] = '\0';
+			//for (int j = 0; j < strlen(nicheng); j++) {
+			//	if (nicheng[j] != '\n') {
+			//		outtextxy(x + 50 + j * 40, y, nicheng[j]);
+			//	}
+			//}
+			//for (a = 0; jifen[a] != '\n' && jifen[a] != '\0'; a++);
+			//nicheng[a] = '\0';
+			//for (int j = 0; j < strlen(jifen); j++) {
+			//	if (jifen[j] != '\n') {
+			//		outtextxy(x + 450 + j * 40, y, jifen[j]);
+			//	}
+			//}
 		}
 	}
 	fclose(fp);
-	fclose(fpt);
+	q.close();
+	//fclose(fpt);
 }
 void View() {
 
@@ -1703,8 +1738,8 @@ void paihangView() {
 	IMAGE bk;
 	IMAGE bk2;
 	BeginBatchDraw();
-	loadimage(&bk, L"./白.png", 1200, 800);
-	loadimage(&bk2, L"./扫雷素材/背景.png", 200, 100);
+	loadimage(&bk, "./白.png", 1200, 800);
+	loadimage(&bk2, "./扫雷素材/背景.png", 200, 100);
 	cleardevice();
 	putimage(0, 0, &bk);
 	putimage(1000, 500, &bk2);
