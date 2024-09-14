@@ -275,7 +275,7 @@ void mapshowView(int x, int y);
 void init(int x, int y, int z);
 
 /*
-	负责人：如今
+	负责人：忔往
 	功能：	1.如果map1[i][j]为1则直接结束该函数
 			2.如果map1[i][j]=0且k=1则把map1[i][j]改为1,同时如果sound=1则播放点开音效
 			3.如果map1[i][j]=0且k=2则把map1[i][j]改为2,同时如果sound=1则播放插旗音效
@@ -324,9 +324,235 @@ int _check();
 int  _delete();
 //排行榜页面
 void paihangView();
+
+//用于账号密码核验
+// 返回值：0表示登录成功,1表示账号不存在,2表示密码错误
+int checkzm(string zhanghao, string mima);
+//注册界面
+void zhuce();
+
 // -------------------- service --------------------
 
+int checkzm(string zhanghao, string mima)
+{
+	int cnt = 0;
+	string a;
+	fstream p;
+	p.open("账号.txt", ios::in);
+	while (getline(p, a))
+	{
+		if (zhanghao == a && cnt == 0) { cnt++; continue; }
+		if (mima == a && cnt == 1){cnt++; continue;}
+		if (cnt == 2)
+		{
+			const char* nicheng3 = a.data();
+			strcpy(nicheng, nicheng3);
+			cout << nicheng << endl;
+			break;
+		}
+	}
+	p.close();
+	if (cnt == 0)return 1;
+	if (cnt == 1)return 2;
+	if (cnt == 2)return 0;
+}
+void zhuce()
+{
+	IMAGE bk;
+	//账号
+	string zhanghao;
+	//密码
+	string mima;
+	char ch1[100];
+	setbkmode(TRANSPARENT);
+	settextcolor(BLACK);
+	outtextxy(70, 140, "请输入账号");
+	outtextxy(70, 205, "请输入密码");
+	char zi[50] = { 0 };
+	char zi9[50] = { 0 };
+	char zi8[50] = { 0 };
+	int i = 0;
+	int k = 0;
+	int ii = 0;
+	int kk = 0;
+	ExMessage msg;
+	int status = 0;//0表示不在输入状态，1表示在输入账号，2表示在输入密码,3表示输入完密码并登录
+	BeginBatchDraw();
+	loadimage(&bk, "./注册.png", 450, 425);
+	putimage(0, 0, &bk);
+	int fanhui = 0;
+	int stauts = 0;
+	int iii = 0; int kkk = 0;
+	int status1 = 9;
+	while (1)
+	{
+		cleardevice();
+		putimage(0, 0, &bk);
+		if (strlen(zi) < 1 && fanhui == 0)
+		{
+			outtextxy(70, 140, "请输入账号");
+		}
 
+		if (status == 1)
+		{
+			char ch = _getch();
+			fanhui = 0;
+			if (ch == '\r')
+			{
+				status = 2;
+			}
+			else if (ch == '\b')
+			{
+				if (strlen(zi) > 0)
+				{
+					i--;
+					zi[i] = '\0';
+				}
+			}
+			else if (ch == 27)
+			{
+				status = 0;
+			}
+			else
+			{
+				zi[i] += ch;
+				i++;
+				k++;
+			}
+
+		}
+		if (strlen(zi9) < 1)
+		{
+			outtextxy(70, 205, "请输入密码");
+		}
+
+		if (status == 2)
+		{
+			char ch9 = _getch();
+			fanhui = 0;
+			if (ch9 == '\r')
+			{
+				status = 4;
+			}
+			else if (ch9 == '\b')
+			{
+				if (strlen(zi9) > 0)
+				{
+					ii--;
+					zi9[ii] = '\0';
+				}
+			}
+			else if (ch9 == 27)
+			{
+				status = 0;
+			}
+			else
+			{
+				zi9[ii] += ch9;
+				ii++;
+				kk++;
+			}
+
+		}
+		if (strlen(zi8) < 1 && fanhui == 0)
+		{
+			outtextxy(70, 70, "请输入昵称");
+		}
+
+		if (status == 3)
+		{
+			char ch8 = _getch();
+			fanhui = 0;
+			if (ch8 == '\r')
+			{
+				status = 1;
+			}
+			else if (ch8 == '\b')
+			{
+				if (strlen(zi8) > 0)
+				{
+					iii--;
+					zi8[iii] = '\0';
+				}
+			}
+			else if (ch8 == 27)
+			{
+				status = 0;
+			}
+			else
+			{
+				zi8[iii] += ch8;
+				iii++;
+				kkk++;
+			}
+
+		}
+		
+		peekmessage(&msg);
+		//printf("%d %d\n", msg.x, msg.y);
+		if (msg.x > 47 && msg.x < 398 && msg.y>125 && msg.y < 164 && msg.message == WM_LBUTTONDOWN) {
+			status = 1;
+		}
+		else if (msg.x > 47 && msg.x < 397 && msg.y>191 && msg.y < 233 && msg.message == WM_LBUTTONDOWN) {
+			status = 2;
+		}
+		else if (msg.x > 47 && msg.x < 397 && msg.y>56 && msg.y < 96 && msg.message == WM_LBUTTONDOWN) {
+			status = 3;
+		}
+		else if (msg.x > 332 && msg.x < 394 && msg.y>316 && msg.y < 335 && msg.message == WM_LBUTTONDOWN) {
+			Sleep(200);
+			break;
+		}
+		else if (msg.x > 54 && msg.x < 378 && msg.y>354 && msg.y < 401 && msg.message == WM_LBUTTONDOWN || status == 4)
+		{
+			zhanghao = zi;
+			mima = zi9;
+			status1 = checkzm(zhanghao, mima);
+			if (status1 == 2||status1==0)
+			{
+				status = 1;
+				fanhui = 1;
+				i = 0; k = 0;
+				for (int x = strlen(zi); x >= 0; x--)
+				{
+					zi[x] = '\0';
+				}
+			}
+			else if(status1==1){
+				strcpy(nicheng, zi8);
+				break;
+			}
+	    }
+		if (fanhui == 1)
+		{
+			outtextxy(70, 140, "账号已存在!");
+		}
+		outtextxy(70, 140, _T("                      "));
+		outtextxy(70, 140, zi);
+		outtextxy(70, 205, _T("                      "));
+		outtextxy(70, 205, zi9);
+		outtextxy(70, 70, _T("                      "));
+		outtextxy(70, 70, zi8);
+
+		outtextxy(330, 318, "返回登录");
+		FlushBatchDraw();
+	}
+	if (status1 == 1) {
+		IMAGE BK;
+		loadimage(&BK, "./扫雷素材/背景.png", 450,425 );
+		fstream p;
+		p.open("账号.txt", ios::app);
+		p << zhanghao << '\n';
+		p << mima << '\n';
+		p << nicheng << '\n';
+		p.close();
+		cleardevice();
+		putimage(0, 0, &BK);
+		outtextxy(190, 180, "注册成功");
+		FlushBatchDraw();
+		Sleep(1000);
+	}
+}
 int main()
 {
 	denglu();
@@ -335,40 +561,163 @@ int main()
 }
 
 void denglu() {
-	initgraph(400, 400, 1);
+	IMAGE bk;
+	//账号
+	string zhanghao;
+	//密码
+	string mima;
+	loadimage(&bk,"./登录.png", 450, 425);
+	initgraph(450, 425, 1);
+	putimage(0, 0, &bk);
 	char ch1[100];
-	outtextxy(105, 105, "请输入昵称(不包含汉字)");
-	char zi[50]{ 0 };
+	setbkmode(TRANSPARENT);
+	settextcolor(BLACK);
+	outtextxy(70, 110, "请输入账号");
+	outtextxy(70, 185, "请输入密码");
+	char zi[50]={ 0 };
+	char zi9[50]={ 0 };
 	int i = 0;
 	int k = 0;
+	int ii = 0;
+	int kk = 0;
+	ExMessage msg;
+	int status = 0;//0表示不在输入状态，1表示在输入账号，2表示在输入密码,3表示输入完密码并登录
+	BeginBatchDraw();
+	int fanhui=0;
 	while (1) {
-		rectangle(100, 100, 300, 130);
-		char ch = _getch();
+		
 		cleardevice();
-		if (ch == '\r')
+		putimage(0, 0, &bk);
+		if (strlen(zi) < 1&&fanhui==0)
 		{
-			break;
+			outtextxy(70, 110, "请输入账号");
 		}
-		else if (ch == '\b')
+		
+		if (status == 1)
 		{
-			if (strlen(zi) > 0)
+			char ch = _getch();
+			fanhui = 0;
+			if (ch == '\r')
 			{
-				i--;
-				zi[i] = '\0';
+				status = 2;
+			}
+			else if (ch == '\b')
+			{
+				if (strlen(zi) > 0)
+				{
+					i--;
+					zi[i] = '\0';
+				}
+			}
+			else if (ch == 27)
+			{
+				status = 0;
+			}
+			else
+			{
+				zi[i] += ch;
+				i++;
+				k++;
+			}
+			
+		}
+		if (strlen(zi9) < 1)
+		{
+			outtextxy(70, 185, "请输入密码");
+		}
+
+		if (status == 2)
+		{
+			char ch9 = _getch();
+			fanhui = 0;
+			if (ch9 == '\r')
+			{
+				status =3 ;
+			}
+			else if (ch9 == '\b')
+			{
+				if (strlen(zi9) > 0)
+				{
+					ii--;
+					zi9[ii] = '\0';
+				}
+			}
+			else if (ch9 == 27)
+			{
+				status = 0;
+			}
+			else
+			{
+				zi9[ii] += ch9;
+				ii++;
+				kk++;
+			}
+			
+		}
+
+		outtextxy(330, 338, "退出");
+		outtextxy(0, 0, "（提示：按esc键返回）");
+		peekmessage(&msg);
+		if (msg.x > 28 && msg.x < 417 && msg.y>94 && msg.y < 141 && msg.message == WM_LBUTTONDOWN) {
+			status = 1;
+		}
+		else if (msg.x > 29 && msg.x < 417 && msg.y>168 && msg.y < 216 && msg.message == WM_LBUTTONDOWN) {
+			status = 2;
+		}
+		else if (msg.x > 68 && msg.x < 105 && msg.y>336 && msg.y < 356 && msg.message == WM_LBUTTONDOWN) {
+			zhuce();
+		}
+		else if (msg.x > 332 && msg.x < 361 && msg.y>337 && msg.y < 356 && msg.message == WM_LBUTTONDOWN) {
+			exit(0);
+		}
+		else if ((msg.x > 48 && msg.x < 400 && msg.y>263 && msg.y < 313 && msg.message == WM_LBUTTONDOWN) || status == 3) {
+			zhanghao = zi;
+			mima = zi9;
+			int status1 = checkzm(zhanghao, mima);
+			if (status1 == 0)
+			{
+				break;
+			}
+			else if (status1 == 1)
+			{
+				i = 0; k = 0; ii = 0; kk = 0;
+				for (int x = strlen(zi); x >= 0; x--) 
+				{
+					zi[x] = '\0';
+				}
+				for (int x = strlen(zi9); x >= 0; x--)
+				{
+					zi9[x] = '\0';
+				}
+				fanhui = 1;
+				status = 1;
+			}
+			else if (status1 == 2)
+			{
+				ii = 0; kk = 0;
+				fanhui = 2;
+				for (int x = strlen(zi9); x >= 0; x--)
+				{
+					zi9[x] = '\0';
+				}
+				status = 2;
 			}
 		}
-		else
+		if (fanhui == 1)
 		{
-			zi[i] += ch;
-			i++;
-			k++;
+			outtextxy(70, 110, "账号不存在!");
 		}
-		outtextxy(105, 105, _T("        "));
-		for (int j = 0; j < k; j++) {
-			outtextxy(105 + j * 7, 105, zi[j]);
+		if (fanhui == 2)
+		{
+			outtextxy(70, 185, "密码不存在!");
 		}
+		outtextxy(70, 110, _T("                      "));
+		outtextxy(70, 110, zi);
+		outtextxy(70, 185, _T("                      "));
+		outtextxy(70, 185, zi9);
+		FlushBatchDraw();
 	}
-	strcpy(nicheng, zi);
+	//strcpy(nicheng, zi);
 	closegraph();
 }
 void controller()
@@ -541,6 +890,7 @@ void gameView(int x, int y, int z)
 	IMAGE chongzhi;
 	IMAGE chongzhi2;
 	ExMessage msg;
+	settextstyle(50, 0, "微软雅黑");
 	if (xunbaomoshi == 0 && skin == 1) {
 		loadimage(&bk, "./扫雷素材/背景.png", 1200, 800);
 	}
@@ -630,6 +980,7 @@ void gameView(int x, int y, int z)
 							Sleep(350);
 							mciSendString("close ./扫雷素材/点按钮.mp3", 0, 0, 0);
 						}
+						else	Sleep(200);
 					}
 
 				}
@@ -651,6 +1002,7 @@ void gameView(int x, int y, int z)
 							Sleep(350);
 							mciSendString("close ./扫雷素材/点按钮.mp3", 0, 0, 0);
 						}
+						else Sleep(200);
 					}
 				}
 			}
@@ -671,6 +1023,7 @@ void gameView(int x, int y, int z)
 							Sleep(350);
 							mciSendString("close ./扫雷素材/点按钮.mp3", 0, 0, 0);
 						}
+						else Sleep(200);
 					}
 				}
 			}
@@ -692,6 +1045,7 @@ void gameView(int x, int y, int z)
 						Sleep(350);
 						mciSendString("close ./扫雷素材/点按钮.mp3", 0, 0, 0);
 					}
+					else Sleep(200);
 				}
 			}
 		}
@@ -724,6 +1078,7 @@ void gameView(int x, int y, int z)
 			if (winView == 0) { init(x, y, z); Sleep(200); }
 		}
 		k = quanjvjifen;
+		
 		for (int j = 0; k > 0; j++) {
 			outtextxy(155 - j * 20, 105, k % 10 + 48);
 			k /= 10;
@@ -746,7 +1101,6 @@ void setView()
 		setfillcolor(BLACK);
 		BeginBatchDraw();
 		putimage(0, 0, &img);//放置背景图片
-		sound = 1;
 		ExMessage m;
 		m = getmessage(EX_MOUSE);
 		if (m.message == WM_LBUTTONDOWN)
@@ -928,7 +1282,15 @@ void gameoverView(int x)
 		jifen[j] = k % 10 + 48;
 		k /= 10;
 	}
-	if (k == 0) {
+	int longth = strlen(jifen);
+	int iii = 0;
+	char jifen2[20] = { 0 };
+	strcpy(jifen2, jifen);
+	for (longth; longth > 0; longth--) {
+		jifen[iii] = jifen2[longth - 1];
+		iii++;
+	}
+	if (quanjvjifen == 0) {
 		jifen[0] = '1';
 	}
 	char ch2[128];
@@ -1135,13 +1497,13 @@ void init(int x, int y, int z)
 {
 
 	int i, k, r, c;
-	for (int i = 0; i < x; i++) {
-		for (int j = 0; j < y; j++) {
+	for (int i = 0; i < 16; i++) {
+		for (int j = 0; j < 30; j++) {
 			map1[i][j] = 0;
 		}
 	}
-	for (int i = 0; i < x; i++) {
-		for (int j = 0; j < y; j++) {
+	for (int i = 0; i < 16; i++) {
+		for (int j = 0; j < 30; j++) {
 			map2[i][j] = 0;
 		}
 	}
@@ -1208,14 +1570,7 @@ void init(int x, int y, int z)
 					}
 				}
 			}
-			for (i = 0; i < x; i++)
-			{
-				for (k = 0; k < y; k++)
-				{
-					printf("%2d ", map2[i][k]);
-				}
-				printf("\n");
-			}
+
 		}
 		if (x == 16 && y == 16)
 		{
@@ -1277,14 +1632,7 @@ void init(int x, int y, int z)
 					}
 				}
 			}
-			for (i = 0; i < x; i++)
-			{
-				for (k = 0; k < y; k++)
-				{
-					printf("%2d ", map2[i][k]);
-				}
-				printf("\n");
-			}
+
 		}
 		if (x == 16 && y == 20)
 		{
@@ -1346,14 +1694,7 @@ void init(int x, int y, int z)
 					}
 				}
 			}
-			for (i = 0; i < x; i++)
-			{
-				for (k = 0; k < y; k++)
-				{
-					printf("%2d ", map2[i][k]);
-				}
-				printf("\n");
-			}
+
 		}
 	}
 	if (z == 2)
@@ -1420,14 +1761,7 @@ void init(int x, int y, int z)
 		r = rand() % 12;
 		c = rand() % 20;
 		map2[r][c] = 10;
-		for (i = 0; i < x; i++)
-		{
-			for (k = 0; k < y; k++)
-			{
-				printf("%2d ", map2[i][k]);
-			}
-			printf("\n");
-		}
+
 	}
 }
 
